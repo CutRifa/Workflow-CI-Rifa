@@ -1,0 +1,33 @@
+name: Train Model Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        pip install mlflow==2.19.0 pandas scikit-learn matplotlib
+
+    - name: Run MLflow Project
+      run: |
+        # Masuk ke folder MLProject lalu jalankan perintah python langsung
+        # (Kita bypass conda agar lebih cepat di GitHub Actions free tier)
+        cd MLProject
+        python modelling.py
