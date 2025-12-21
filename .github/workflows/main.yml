@@ -17,17 +17,15 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        pip install mlflow==2.19.0 pandas scikit-learn
+        pip install mlflow pandas scikit-learn matplotlib seaborn
 
     - name: Run Model Training
-      # Masuk ke folder MLProject lalu jalankan scriptnya
       run: |
-        cd MLProject
-        python modelling.py
+        cd Membangun_model
+        python modelling_tuning.py
     
     - name: Upload Artifacts (Model & Preprocessed Data)
-      # Simpan hasil run agar bisa didownload (Syarat Skilled)
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
-        path: MLProject/mlruns/
+        path: Membangun_model/mlruns/

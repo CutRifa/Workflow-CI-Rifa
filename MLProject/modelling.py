@@ -5,35 +5,43 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 import os
 
-# --- Load Data ---
-# Pastikan path ini sesuai dengan struktur folder di CI nanti
-# Kita gunakan try-except agar aman dijalankan di berbagai environment
+# --- 1. Load Data ---
+# PERBAIKAN: Menggunakan nama folder 'iris_preprocessing' (sesuai folder Anda)
+folder_name = "iris_preprocessing" 
+print(f"Memuat data dari folder '{folder_name}'...")
+
 try:
-    X_train = pd.read_csv("wine_preprocessed/X_train.csv")
-    y_train = pd.read_csv("wine_preprocessed/y_train.csv").values.ravel()
-    X_test = pd.read_csv("wine_preprocessed/X_test.csv")
-    y_test = pd.read_csv("wine_preprocessed/y_test.csv").values.ravel()
+    X_train = pd.read_csv(f"{folder_name}/X_train.csv")
+    y_train = pd.read_csv(f"{folder_name}/y_train.csv").values.ravel()
+    X_test = pd.read_csv(f"{folder_name}/X_test.csv")
+    y_test = pd.read_csv(f"{folder_name}/y_test.csv").values.ravel()
+    
+    print("✅ Data berhasil dimuat!")
+
 except FileNotFoundError:
-    # Fallback untuk Kriteria 3 jika struktur folder sedikit berbeda
-    X_train = pd.read_csv("namadataset_preprocessing/X_train.csv")
-    y_train = pd.read_csv("namadataset_preprocessing/y_train.csv").values.ravel()
-    X_test = pd.read_csv("namadataset_preprocessing/X_test.csv")
-    y_test = pd.read_csv("namadataset_preprocessing/y_test.csv").values.ravel()
+    print(f"❌ Error: Folder '{folder_name}' tidak ditemukan.")
+    print("Cek nama folder Anda. Apakah 'iris_preprocessing' atau 'iris_preprocessed'?")
+    print(f"Lokasi saat ini: {os.getcwd()}")
+    exit()
 
-# --- MLflow Run ---
-mlflow.set_experiment("Eksperimen_Wine_Simple")
+# --- 2. Setup MLflow ---
+mlflow.set_experiment("Eksperimen_Iris_Final")
 
-with mlflow.start_run(run_name="Basic_RandomForest"):
-    # Definisi Model Sederhana
-    model = RandomForestClassifier(n_estimators=50, random_state=42)
+# --- 3. Training ---
+print("Mulai Training...")
+
+with mlflow.start_run(run_name="Iris_RandomForest"):
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
     
-    # Prediksi
-    y_pred = model.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
+    predictions = model.predict(X_test)
+    accuracy = accuracy_score(y_test, predictions)
     
-    print(f"Accuracy: {acc}")
+    print(f"Model Accuracy: {accuracy:.4f}")
     
-    # Logging Sederhana
-    mlflow.log_metric("accuracy", acc)
-    mlflow.sklearn.log_model(model, "model")
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_metric("accuracy", accuracy)
+    mlflow.sklearn.log_model(model, "model_random_forest")
+    
+    print("✅ Model tersimpan di MLflow.")
+    print(f"Run ID: {mlflow.active_run().info.run_id}")
