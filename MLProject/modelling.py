@@ -2,46 +2,37 @@ import pandas as pd
 import mlflow
 import mlflow.sklearn
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn import datasets
+import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 
-# --- 1. Load Data ---
-# PERBAIKAN: Menggunakan nama folder 'iris_preprocessing' (sesuai folder Anda)
-folder_name = "iris_preprocessing" 
-print(f"Memuat data dari folder '{folder_name}'...")
+# 1. Load Data Iris
+print("[INFO] Loading data Iris...")
+iris = datasets.load_iris()
+X = pd.DataFrame(iris.data, columns=['sepal_length', 'sepal_width', 'petal_length', 'petal_width'])
+y = iris.target
 
-try:
-    X_train = pd.read_csv(f"{folder_name}/X_train.csv")
-    y_train = pd.read_csv(f"{folder_name}/y_train.csv").values.ravel()
-    X_test = pd.read_csv(f"{folder_name}/X_test.csv")
-    y_test = pd.read_csv(f"{folder_name}/y_test.csv").values.ravel()
-    
-    print("✅ Data berhasil dimuat!")
+# Split Data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-except FileNotFoundError:
-    print(f"❌ Error: Folder '{folder_name}' tidak ditemukan.")
-    print("Cek nama folder Anda. Apakah 'iris_preprocessing' atau 'iris_preprocessed'?")
-    print(f"Lokasi saat ini: {os.getcwd()}")
-    exit()
+# 2. Setup MLflow
+mlflow.set_experiment("Eksperimen_Iris_Rifa_CI")
 
-# --- 2. Setup MLflow ---
-mlflow.set_experiment("Eksperimen_Iris_Final")
-
-# --- 3. Training ---
-print("Mulai Training...")
-
-with mlflow.start_run(run_name="Iris_RandomForest"):
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
+# 3. Training
+with mlflow.start_run():
+    rf = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf.fit(X_train, y_train)
     
-    predictions = model.predict(X_test)
-    accuracy = accuracy_score(y_test, predictions)
+    # Prediksi
+    y_pred = rf.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    print(f"[INFO] Accuracy: {acc:.4f}")
     
-    print(f"Model Accuracy: {accuracy:.4f}")
+    # Logging
+    mlflow.log_metric("accuracy", acc)
+    mlflow.sklearn.log_model(rf, "model_iris") # Nama folder model
     
-    mlflow.log_param("n_estimators", 100)
-    mlflow.log_metric("accuracy", accuracy)
-    mlflow.sklearn.log_model(model, "model_random_forest")
-    
-    print("✅ Model tersimpan di MLflow.")
-    print(f"Run ID: {mlflow.active_run().info.run_id}")
+    print("[SUCCESS] Training Selesai.")

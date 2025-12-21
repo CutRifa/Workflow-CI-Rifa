@@ -21,11 +21,12 @@ jobs:
 
     - name: Run Model Training
       run: |
-        cd Membangun_model
-        python modelling_tuning.py
+        cd MLProject
+        python modelling.py
     
-    - name: Upload Artifacts (Model & Preprocessed Data)
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
-        path: Membangun_model/mlruns/
+        # Upload hasil dari dalam folder MLProject
+        path: MLProject/mlruns/
