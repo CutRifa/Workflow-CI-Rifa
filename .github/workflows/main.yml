@@ -20,9 +20,10 @@ jobs:
         pip install mlflow pandas scikit-learn matplotlib seaborn
 
     - name: Run Model Training with MLflow Project
-      # PERBAIKAN: Masuk ke folder 'Membangun_model' dan gunakan --env-manager local
       run: |
+        # Masuk ke folder sesuai struktur di VS Code Anda
         cd Membangun_model
+        # Gunakan env-manager local agar tidak error di GitHub
         mlflow run . --experiment-name "Stellar_CI_Run" --env-manager local
 
     - name: Upload Artifacts
