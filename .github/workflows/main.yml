@@ -20,13 +20,11 @@ jobs:
         pip install mlflow pandas scikit-learn matplotlib seaborn
 
     - name: Run Model Training with MLflow Project
-      # PERBAIKAN: Masuk ke folder 'Membangun_model' dan gunakan 'mlflow run'
       run: |
         cd Membangun_model
-        mlflow run . --experiment-name "Stellar_CI_Run" --no-conda
+        mlflow run . --experiment-name "Stellar_CI_Run" --env-manager local
 
     - name: Upload Artifacts
-      # PERBAIKAN: Pastikan path artifact sesuai dengan lokasi mlruns terbaru
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
