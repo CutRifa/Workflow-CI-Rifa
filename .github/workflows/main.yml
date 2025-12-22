@@ -21,9 +21,7 @@ jobs:
 
     - name: Run Model Training with MLflow Project
       run: |
-        # PERBAIKAN: Masuk ke folder sesuai struktur terbaru Anda
         cd MLProject
-        # Gunakan env-manager local agar sukses di GitHub Actions
         mlflow run . --experiment-name "Stellar_CI_Run" --env-manager local
 
     - name: Upload Artifacts
