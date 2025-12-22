@@ -20,9 +20,9 @@ jobs:
         pip install mlflow pandas scikit-learn matplotlib seaborn
 
     - name: Run Model Training with MLflow Project
-      # Menggunakan --env-manager local sesuai hasil tes terminal lokal Anda
       run: |
         cd Membangun_model
+        # Gunakan env-manager local agar tidak butuh Conda di GitHub
         mlflow run . --experiment-name "Stellar_CI_Run" --env-manager local
 
     - name: Upload Artifacts
