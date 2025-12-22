@@ -1,4 +1,4 @@
-name: CI Workflow for Iris Model
+name: CI Workflow for Stellar Model
 
 on: [push]
 
@@ -19,14 +19,15 @@ jobs:
       run: |
         pip install mlflow pandas scikit-learn matplotlib seaborn
 
-    - name: Run Model Training
+    - name: Run Model Training with MLflow Project
+      # PERBAIKAN: Masuk ke folder 'Membangun_model' dan gunakan 'mlflow run'
       run: |
-        cd MLProject
-        python modelling.py
-    
+        cd Membangun_model
+        mlflow run . --experiment-name "Stellar_CI_Run" --no-conda
+
     - name: Upload Artifacts
+      # PERBAIKAN: Pastikan path artifact sesuai dengan lokasi mlruns terbaru
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
-        # Upload hasil dari dalam folder MLProject
-        path: MLProject/mlruns/
+        path: Membangun_model/mlruns/
