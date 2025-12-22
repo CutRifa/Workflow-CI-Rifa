@@ -21,13 +21,14 @@ jobs:
 
     - name: Run Model Training with MLflow Project
       run: |
-        # Masuk ke folder sesuai struktur di VS Code Anda
-        cd Membangun_model
-        # Gunakan env-manager local agar tidak error di GitHub
+        # PERBAIKAN: Masuk ke folder sesuai struktur terbaru Anda
+        cd MLProject
+        # Gunakan env-manager local agar sukses di GitHub Actions
         mlflow run . --experiment-name "Stellar_CI_Run" --env-manager local
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
-        path: Membangun_model/mlruns/
+        # Sesuaikan path ke lokasi mlruns di dalam folder MLProject
+        path: MLProject/mlruns/

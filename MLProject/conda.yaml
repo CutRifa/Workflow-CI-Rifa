@@ -1,4 +1,4 @@
-name: iris_project_env
+name: stellar_project_env
 channels:
   - defaults
 dependencies:
